@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>法学 ユニバーサル暗記 SYSTEM v24.6</title>
+<title>法学 ユニバーサル暗記 SYSTEM v24.7</title>
 
 <style>
 /* 🌿 기본 테마 (HAN - 나무위키 그린) */
@@ -357,7 +357,7 @@ hr.quote-hr { border: 0; border-top: 1px solid #c0c0c0; margin: 8px 0; }
 <body>
 
 <div class="top-bar">
-    <div class="top-title" id="appMainTitle">🌿 法学 ユニバーサル暗記 SYSTEM v24.6</div>
+    <div class="top-title" id="appMainTitle">🌿 法学 ユニバーサル暗記 SYSTEM v24.7</div>
     <div class="user-tab">
         <button class="btn-user active" data-user="han">👤 HAN</button>
         <button class="btn-user" data-user="ume">👤 UME</button>
@@ -433,7 +433,7 @@ hr.quote-hr { border: 0; border-top: 1px solid #c0c0c0; margin: 8px 0; }
 
     <!-- 조문/정리/논증 전용 -->
     <div id="form-slot">
-        <textarea id="slotQText" class="large-q-input" placeholder="3. 問題文&#10;### 大見出し (# 表示, 24px)&#10;## 主題 (自動1., 2. + 윗줄 여백)&#10;# 小主題 (自動1.1. + 下位字下げ)&#10;- 項目 (自動(1))&#10;>引用文< (나무위키 イン용ボックス, --- で区切り線)&#10;***ハイライト*** (黄色) / ///太字/// / 空欄: {正解}"></textarea>
+        <textarea id="slotQText" class="large-q-input" placeholder="3. 問題文&#10;### 大見出し (# 表示, 24px)&#10;## 主題 (自動1., 2. + 윗줄 여백)&#10;# 小主題 (自動1.1. + 下位字下げ)&#10;- 項目 (自動(1))&#10;>引用文< (나무위키 인용박스, --- で区切り線)&#10;***ハイライト*** (黄色) / ///太字/// / 空欄: {正解}"></textarea>
     </div>
 
     <button id="btnAddQ" class="action-btn">問題を追加する</button>
@@ -562,6 +562,43 @@ let oxUserAnswers = {};
 function getCircNum(index) { return `(${index + 1})`; }
 function getAppMode(cat) { return (cat === "ox") ? "ox" : (cat === "definition" ? "def" : "slot"); }
 
+/* ================= 📱 아이폰/아이패드/PC 공통 스마트 스크롤 헬퍼 ================= */
+// 1. 시험 시작 및 재출제 시 상단 탭으로 올라가지 않고 문제 1번 헤더로 정확히 맞춰주는 함수
+function scrollToExamStart() {
+    const examHeader = document.querySelector(".examHeader");
+    if (examHeader) {
+        const rect = examHeader.getBoundingClientRect();
+        const targetScrollY = window.scrollY + rect.top - 16; // 상단 16px 여백 유지
+        window.scrollTo({ top: Math.max(0, targetScrollY), behavior: "smooth" });
+    }
+}
+
+// 2. 입력칸 포커스 시 가시 영역 중앙 기준 ±4행(약 ±75px) 범위를 벗어나면 부드럽게 화면을 맞춰주는 함수
+function smartScrollToInput(el, forceImmediateCenter = false) {
+    if (!el) return;
+    setTimeout(() => {
+        const vv = window.visualViewport;
+        const viewportHeight = vv ? vv.height : window.innerHeight;
+        const offsetTop = vv ? vv.offsetTop : 0;
+
+        // 하단 고정 채점바(약 70px)를 제외한 실제 유효 가시 영역 계산
+        const gradeBarHeight = 70;
+        const usableHeight = Math.max(160, viewportHeight - gradeBarHeight);
+        const idealCenterY = offsetTop + (usableHeight * 0.46); // 시야 중앙보다 살짝 위(최적 타이핑 위치)
+
+        const rect = el.getBoundingClientRect();
+        const elCenterY = rect.top + (rect.height / 2);
+
+        // 데드존(안전 범위): 약 ±3.5~4행 (75px). 이 안에 있으면 화면 흔들림 방지!
+        const deadZone = 75;
+        const diff = elCenterY - idealCenterY;
+
+        if (forceImmediateCenter || Math.abs(diff) > deadZone) {
+            window.scrollBy({ top: diff, behavior: "smooth" });
+        }
+    }, 60);
+}
+
 // UI 및 폼 업데이트
 function updateUIContext() {
     currentAppMode = getAppMode(currentCategory);
@@ -569,11 +606,11 @@ function updateUIContext() {
     // 테마 설정
     if (currentUser === "ume") {
         document.body.classList.add("theme-ume");
-        document.getElementById("appMainTitle").textContent = "🌸 法学 ユニバーサル暗記 SYSTEM v24.6";
+        document.getElementById("appMainTitle").textContent = "🌸 法学 ユニバーサル暗記 SYSTEM v24.7";
         document.getElementById("personalHeader").textContent = "👤 UME";
     } else {
         document.body.classList.remove("theme-ume");
-        document.getElementById("appMainTitle").textContent = "🌿 法学 ユニバーサル暗記 SYSTEM v24.6";
+        document.getElementById("appMainTitle").textContent = "🌿 法学 ユニバーサル暗記 SYSTEM v24.7";
         document.getElementById("personalHeader").textContent = "👤 HAN";
     }
 
@@ -668,7 +705,6 @@ function formatText(str) {
         }
         if (trimmed.startsWith("##")) {
             h2Count++; h3Count = 0; currentLevel = 2;
-            // 💡 ## 명령어에만 윗줄 개행 추가 (이전 줄이 비어있지 않은 경우에 한함)
             let prevTrimmed = index > 0 ? lines[index - 1].trim() : "";
             let addEmptyLine = (index > 0 && prevTrimmed !== "") ? "\n" : "";
             return addEmptyLine + `<span class="custom-h2">${h2Count}. ${restoreQuotes(trimmed.replace(/^##\s?/, ""), false)}</span>`;
@@ -919,7 +955,7 @@ function startTest(pool, selectedLabel) {
     let selectedQuestions = shuffle(pool).slice(0, Math.max(1, n));
     currentTest = prepareTestData(selectedQuestions);
     oxUserAnswers = {};
-    renderExam(currentTest, `${currentSubjectTitle} (${currentCategoryTitle}) ${selectedLabel} (${currentTest.length}問)`);
+    renderExam(currentTest, `${currentSubjectTitle} (${currentCategoryTitle}) ${selectedLabel} (${currentTest.length}問)`, true);
     document.getElementById("btnRetryWrong").classList.add("hidden");
     
     if (currentAppMode !== "ox") {
@@ -937,8 +973,8 @@ document.getElementById("btnStartTag").addEventListener("click", () => {
     startTest(sel === "all" ? db : db.filter(q => q.tags && q.tags.includes(sel)), sel === "all" ? "全体ランダム" : `#${sel}`);
 });
 
-/* ================= 💡 동적 시험 화면 렌더링 ================= */
-function renderExam(testData, title) {
+/* ================= 💡 동적 시험 화면 렌더링 (스마트 포커스 & 스크롤 연동) ================= */
+function renderExam(testData, title, shouldFocusFirst = true) {
     let html = `<div class="examSession"><div class="examHeader" style="font-size:16px; font-weight:800; color:var(--accent-dark); margin-top:15px; margin-bottom:12px;">${title}</div>`;
     const hideTarget = document.getElementById("defHideTarget").value;
 
@@ -968,7 +1004,6 @@ function renderExam(testData, title) {
                 let userAns = q.userAnswers ? q.userAnswers[blankIndex] : null;
                 let idx = blankIndex++;
                 if (isSolved) return `<span class="inline-blank-container"><input class="inline-input status-correct" style="width:${Math.max(ansText.length*16+20, 75)}px;" value="${ansText}" disabled readonly></span>`;
-                let sClass = userAns !== null ? "" : "status-wrong";
                 let hintHtml = userAns !== null ? `<span class="inline-wrong-hint">(${ansText})</span>` : "";
                 return `<span class="inline-blank-container"><input class="inline-input ${userAns !== null ? 'status-wrong':''}" id="ans_${i}_${idx}" style="width:${Math.max(ansText.length*16+20, 75)}px;" placeholder="${getCircNum(idx)}" value="${userAns || ""}" enterkeyhint="next">${hintHtml}</span>`;
             });
@@ -988,16 +1023,42 @@ function renderExam(testData, title) {
         }));
         btnG.classList.add("hidden"); 
         btnR.classList.add("hidden"); 
+        if (shouldFocusFirst) setTimeout(() => scrollToExamStart(), 60);
     } else {
         btnG.classList.remove("hidden"); btnR.classList.add("hidden");
         setTimeout(() => {
-            const firstInput = document.querySelector(".inline-input:not([disabled])");
-            if (firstInput) firstInput.focus();
-            const inputs = Array.from(document.querySelectorAll(".inline-input:not([disabled])"));
-            inputs.forEach((input, index) => input.addEventListener("keydown", e => {
-                if (e.key === "Enter") { e.preventDefault(); const n = inputs[index + 1]; if (n) n.focus(); else input.blur(); }
-            }));
-        }, 100);
+            const inputs = Array.from(document.querySelectorAll(".inline-input:not([disabled]), .def-textarea:not([disabled])"));
+            inputs.forEach((input, index) => {
+                // 포커스될 때마다 ±4행 데드존 기반 스마트 스크롤 작동
+                input.addEventListener("focus", () => smartScrollToInput(input, false));
+
+                // 빈칸(input)에서 엔터 입력 시 다음 빈칸으로 포커스 & 스마트 스크롤
+                if (input.classList.contains("inline-input")) {
+                    input.addEventListener("keydown", e => {
+                        if (e.key === "Enter") {
+                            e.preventDefault();
+                            const n = inputs[index + 1];
+                            if (n) {
+                                n.focus({ preventScroll: true });
+                                smartScrollToInput(n, false);
+                            } else {
+                                input.blur();
+                            }
+                        }
+                    });
+                }
+            });
+
+            // 시험 시작 또는 재출제 시 첫 번째 입력칸으로 즉시 포커스 및 화면 중앙 정렬
+            if (shouldFocusFirst) {
+                if (inputs.length > 0) {
+                    inputs[0].focus({ preventScroll: true });
+                    smartScrollToInput(inputs[0], true);
+                } else {
+                    scrollToExamStart();
+                }
+            }
+        }, 80);
     }
 }
 
@@ -1066,7 +1127,8 @@ document.getElementById("btnGrade").addEventListener("click", () => {
             }
         });
     }
-    renderExam(currentTest, document.querySelector(".examHeader").innerText);
+    // 채점 직후에는 사용자가 결과를 확인할 수 있도록 강제 포커스 이동을 하지 않음(false)
+    renderExam(currentTest, document.querySelector(".examHeader").innerText, false);
     
     if (hasWrong) { 
         document.getElementById("btnGrade").classList.add("half"); 
@@ -1078,7 +1140,7 @@ document.getElementById("btnGrade").addEventListener("click", () => {
     }
 });
 
-/* ================= 오답 복습 (재출제) ================= */
+/* ================= 오답 복습 (재출제 - 문제 1번으로 정확히 포커스 & 스크롤) ================= */
 document.getElementById("btnRetryWrong").addEventListener("click", () => {
     let wrong = [];
     if (currentAppMode === "ox") {
@@ -1097,9 +1159,9 @@ document.getElementById("btnRetryWrong").addEventListener("click", () => {
     
     if (wrong.length > 0) {
         currentTest = wrong;
-        renderExam(currentTest, `🔁 [${currentSubjectTitle}] 誤答復習 (${currentTest.length}問)`);
+        // shouldFocusFirst = true 로 호출하여 페이지 맨 위(top:0)가 아닌 재출제 1번 문제로 곧바로 포커스 & 스크롤!
+        renderExam(currentTest, `🔁 [${currentSubjectTitle}] 誤答復習 (${currentTest.length}問)`, true);
         document.getElementById("btnRetryWrong").classList.add("hidden");
-        window.scrollTo({ top: 0, behavior: 'smooth' });
     } else { 
         alert("間違えた問題がありません！満点です！"); 
     }
