@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>法学 ユニバーサル暗記 SYSTEM v24.7</title>
+<title>法学 ユニバーサル暗記 SYSTEM v25.2</title>
 
 <style>
 /* 🌿 기본 테마 (HAN - 나무위키 그린) */
@@ -29,6 +29,9 @@
     --h1-color: #0f172a;       
     --h2-color: #008275;       
     --h3-color: #15803d;       
+    
+    /* 📏 트리 가이드라인 기본 컬러 */
+    --tree-line: #475569;
     
     --correct-color: #008275;
     --wrong-color: #e11d48;
@@ -288,37 +291,146 @@ textarea:focus, input:focus, select:focus {
 
 .question {
     padding: 18px; border-left: 4px solid var(--accent-primary); background: #ffffff; margin-top: 14px;
-    font-size: 15px; line-height: 1.75; position: relative; border-radius: 0 10px 10px 0;
+    font-size: 15px; line-height: 1.65; position: relative; border-radius: 0 10px 10px 0;
     border-top: 1px solid var(--border-light); border-right: 1px solid var(--border-light);
     border-bottom: 1px solid var(--border-light); box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
-.q-body { white-space: pre-wrap; margin-top: 8px; color: #1e293b; }
 
-/* 🏷️ 텍스트 서식 */
-.custom-h1 { display: inline-block; font-size: 24px; font-weight: 800; color: var(--h1-color); line-height: 1.4; letter-spacing: -0.02em; }
-.custom-h2 { display: inline-block; font-size: 20px; font-weight: 700; color: var(--h2-color); line-height: 1.4; }
-.custom-h3 { display: inline-block; font-size: 17px; font-weight: 700; color: var(--h3-color); padding-left: 1.25rem; line-height: 1.4; }
-.indent-under-h2 { display: inline-block; padding-left: 1.25rem; box-sizing: border-box; max-width: 100%; }
-.indent-under-h3 { display: inline-block; padding-left: 2.25rem; box-sizing: border-box; max-width: 100%; }
+.q-body {
+    white-space: normal;
+    margin-top: 8px;
+    color: #1e293b;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+/* ================= 🏷️ 구조적 중첩 트리(Nested Tree) & 2px 선 굵기 통일 ================= */
+.custom-h1 {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--h1-color);
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+    margin: 4px 0 2px 0;
+}
+
+.custom-h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--h2-color);
+    line-height: 1.4;
+    margin: 2px 0;
+}
+
+.custom-h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--h3-color);
+    line-height: 1.45;
+    margin: 4px 0 2px 0;
+}
+
+/* 🌳 중첩 트리 블록 컨테이너 */
+.tree-branch {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    margin-left: 3px;
+    padding-left: 9px;
+}
+
+/* ## 및 # 수직선: 2px로 통일, # 블록끼리는 4px 간격을 띄워 선 구분 */
+.branch-h2 {
+    border-left: 2px solid var(--tree-line);
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.branch-h3 {
+    border-left: 2px solid var(--tree-line);
+    margin-top: 2px;
+    margin-bottom: 5px;
+}
+
+/* 🌟 *, **, *** 분류 컨테이너: 같은 레벨의 항목끼리 선이 붙지 않도록 상하 5px 간격 부여 */
+.branch-star {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+/* 단일선 (모두 2px로 통일!) */
+.branch-star-default { border-left: 2px solid var(--tree-line); }
+.branch-star-p       { border-left: 2px solid #ea580c; } /* 주황색 2px */
+.branch-star-exc     { border-left: 2px solid #1d4ed8; } /* 파란색 2px */
+.branch-star-r       { border-left: 2px solid #0e7490; } /* 짙은 푸른색 2px */
+
+/* 2중선 (eg, neg): 두 줄 모두 각각 정확히 2px 두께를 갖도록 정밀 구현 */
+.branch-star-eg, .branch-star-neg {
+    position: relative;
+    border-left: 2px solid;
+    padding-left: 12px; /* 안쪽 두 번째 선(2px) + 선 간격(2px) 확보 */
+}
+.branch-star-eg::before, .branch-star-neg::before {
+    content: "";
+    position: absolute;
+    left: 2px; /* 바깥 선(2px)에서 2px 떨어진 위치에 안쪽 선 배치 */
+    top: 0;
+    bottom: 0;
+    width: 2px; /* 안쪽 선 두께도 2px로 완벽 통일 */
+}
+.branch-star-eg          { border-left-color: #9d174d; }
+.branch-star-eg::before  { background-color: #9d174d; }
+
+.branch-star-neg         { border-left-color: #5b21b6; }
+.branch-star-neg::before { background-color: #5b21b6; }
+
+/* 각 텍스트 행 */
+.tree-line {
+    display: block;
+    min-height: 1.55em;
+    line-height: 1.65;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.tree-empty-line {
+    display: block;
+    height: 0.75em;
+}
+
 .custom-list { font-weight: 700; color: var(--text-main); }
-mark.hl-pen { display: inline; background: linear-gradient(transparent 30%, #fef08a 30%); color: inherit; font-weight: 700; padding: 0 2px; border-radius: 2px; }
+
+/* 🖍️ 노란색 형광펜 하이라이트 (!!!내용!!!) */
+mark.hl-pen {
+    display: inline;
+    background: linear-gradient(transparent 30%, #fef08a 30%);
+    color: inherit;
+    font-weight: 700;
+    padding: 0 2px;
+    border-radius: 2px;
+}
 
 /* 💬 나무위키 스타일 인용문 (>내용<) 및 구분선 */
 .namu-quote {
-    display: inline-block; background: #eeeeee; border: 1px dashed #cccccc; border-left: 5px solid var(--quote-border);
-    padding: 8px 14px; margin: 2px 0; color: #333333; font-size: 14.5px; line-height: 1.6; border-radius: 2px;
+    display: inline-block; background: #eeeeee; border: 1px dashed #cccccc; border-left: 4px solid var(--quote-border);
+    padding: 7px 12px; margin: 3px 0; color: #333333; font-size: 14.5px; line-height: 1.6; border-radius: 2px;
     box-sizing: border-box; max-width: 100%; vertical-align: middle;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
-.namu-quote.indent-under-h2 { margin-left: 1.25rem; max-width: calc(100% - 1.25rem); }
-.namu-quote.indent-under-h3 { margin-left: 2.25rem; max-width: calc(100% - 2.25rem); }
 
-hr.quote-hr { border: 0; border-top: 1px solid #c0c0c0; margin: 8px 0; }
+hr.quote-hr { border: 0; border-top: 1px solid #c0c0c0; margin: 6px 0; }
 
 .tag-badge { display: inline-block; background: var(--accent-light); color: var(--accent-dark); font-size: 11px; padding: 4px 10px; border-radius: 6px; margin-right: 6px; margin-top: 4px; font-weight: 700; }
 
 /* 빈칸입력 (Slot & Def) */
-.inline-blank-container { display: inline-flex; flex-wrap: wrap; align-items: center; vertical-align: middle; margin: 0 3px; max-width: 100%; }
-.inline-input { display: inline-block; width: auto; min-width: 85px; max-width: 100%; padding: 5px 10px; margin: 0; font-size: 15px; font-weight: 700; border: 2px solid var(--accent-primary); border-radius: 8px; background: #ffffff; color: var(--text-main); outline: none; text-align: center; box-sizing: border-box; transition: all 0.15s ease; }
+.inline-blank-container { display: inline-flex; flex-wrap: wrap; align-items: center; vertical-align: middle; margin: 1px 3px; max-width: 100%; }
+.inline-input { display: inline-block; width: auto; min-width: 85px; max-width: 100%; padding: 4px 8px; margin: 0; font-size: 15px; font-weight: 700; border: 2px solid var(--accent-primary); border-radius: 8px; background: #ffffff; color: var(--text-main); outline: none; text-align: center; box-sizing: border-box; transition: all 0.15s ease; }
 .inline-input:focus { box-shadow: 0 0 0 3px var(--accent-light); }
 .inline-input.status-correct { background-color: #ecfdf5; border-color: var(--correct-color); color: var(--correct-color); }
 .inline-input.status-wrong { background-color: #ffe4e6; border-color: var(--wrong-color); color: var(--wrong-color); }
@@ -327,7 +439,7 @@ hr.quote-hr { border: 0; border-top: 1px solid #c0c0c0; margin: 8px 0; }
 .def-textarea { width: 100%; margin-top: 10px; border: 2px solid var(--accent-primary); border-radius: 8px; padding: 10px; font-size: 15px; font-weight: 600; }
 .def-textarea.status-correct { background-color: #ecfdf5; border-color: var(--correct-color); }
 .def-textarea.status-wrong { background-color: #ffe4e6; border-color: var(--wrong-color); }
-.def-answer-box { margin-top: 8px; padding: 12px; border-radius: 8px; font-size: 14.5px; background: #f8fafc; border: 1px dashed var(--border-color); display: none; white-space: pre-wrap; }
+.def-answer-box { margin-top: 8px; padding: 12px; border-radius: 8px; font-size: 14.5px; background: #f8fafc; border: 1px dashed var(--border-color); display: none; }
 .exam-ox-actions { display: flex; gap: 12px; margin-top: 12px; }
 .btn-choice { flex: 1; padding: 12px; font-size: 16px; font-weight: bold; border: 1px solid var(--border-color); border-radius: 8px; background: white; color: #333; cursor: pointer; }
 .btn-choice.active-o { background: var(--correct-color) !important; color: white !important; border-color: var(--correct-color); }
@@ -357,7 +469,7 @@ hr.quote-hr { border: 0; border-top: 1px solid #c0c0c0; margin: 8px 0; }
 <body>
 
 <div class="top-bar">
-    <div class="top-title" id="appMainTitle">🌿 法学 ユニバーサル暗記 SYSTEM v24.7</div>
+    <div class="top-title" id="appMainTitle">🌿 法学 ユニバーサル暗記 SYSTEM v25.2</div>
     <div class="user-tab">
         <button class="btn-user active" data-user="han">👤 HAN</button>
         <button class="btn-user" data-user="ume">👤 UME</button>
@@ -415,25 +527,31 @@ hr.quote-hr { border: 0; border-top: 1px solid #c0c0c0; margin: 8px 0; }
 
     <!-- OX 전용 -->
     <div id="form-ox" class="hidden">
-        <textarea id="oxQText" class="large-q-input" placeholder="3. 問題文を入力してください&#10;(書式: ###大見出し / ##主題 / #小主題 / -項目 / >引用< / ***ハイライト*** / ///太字///)"></textarea>
+        <textarea id="oxQText" class="large-q-input" placeholder="3. 問題文を入力してください
+(書式: ###大見出し / ##主題 / #小主題 / -項目 / *,**,***下位(p,exc,r,eg,neg) / >引用< / !!!ハイライト!!! / ///太字///)"></textarea>
         <span class="form-label">4. ⭕❌ 正解の判定</span>
         <div class="ox-select-wrapper">
             <div id="choiceO" class="ox-btn selected-o">⭕</div>
             <div id="choiceX" class="ox-btn">❌</div>
         </div>
         <span class="form-label">5. 💡 解説 (すべての書式コマンド使用可)</span>
-        <textarea id="oxNote" class="note-q-input" placeholder="解説文を入力してください (***ハイライト*** や >引用< など使用可能)"></textarea>
+        <textarea id="oxNote" class="note-q-input" placeholder="解説文を入力してください (!!!ハイライト!!! や >引用<, *p など使用可能)"></textarea>
     </div>
 
     <!-- 정의 전용 -->
     <div id="form-def" class="hidden">
         <input id="defTerm" placeholder="3. 定義名・概念名 (例: 行政行為)">
-        <textarea id="defQText" class="large-q-input" placeholder="4. 定義文を入力してください&#10;(書式: ###大見出し / ##主題 / #小主題 / -項目 / >引用< / ***ハイライト*** / ///太字///)"></textarea>
+        <textarea id="defQText" class="large-q-input" placeholder="4. 定義文を入力してください
+(書式: ###大見出し / ##主題 / #小主題 / -項目 / *,**,***下位(p,exc,r,eg,neg) / >引用< / !!!ハイライト!!! / ///太字///)"></textarea>
     </div>
 
     <!-- 조문/정리/논증 전용 -->
     <div id="form-slot">
-        <textarea id="slotQText" class="large-q-input" placeholder="3. 問題文&#10;### 大見出し (# 表示, 24px)&#10;## 主題 (自動1., 2. + 윗줄 여백)&#10;# 小主題 (自動1.1. + 下位字下げ)&#10;- 項目 (自動(1))&#10;>引用文< (나무위키 인용박스, --- で区切り線)&#10;***ハイライト*** (黄色) / ///太字/// / 空欄: {正解}"></textarea>
+        <textarea id="slotQText" class="large-q-input" placeholder="3. 問題文
+### 大見出し (# 表示) / ## 主題 (1., 2. + 構造線) / # 小主題 (1.1. + 構造線)
+- 項目 (見出しごとに (1) から自動採番)
+*, **, *** 下位ツリー構造 (末尾に p, exc, r, eg, neg で左線色変更 / 例: *p 内容)
+>引用文< (--- で区切り線) / !!!ハイライト!!! (黄色) / ///太字/// / 空欄: {正解}"></textarea>
     </div>
 
     <button id="btnAddQ" class="action-btn">問題を追加する</button>
@@ -563,17 +681,15 @@ function getCircNum(index) { return `(${index + 1})`; }
 function getAppMode(cat) { return (cat === "ox") ? "ox" : (cat === "definition" ? "def" : "slot"); }
 
 /* ================= 📱 아이폰/아이패드/PC 공통 스마트 스크롤 헬퍼 ================= */
-// 1. 시험 시작 및 재출제 시 상단 탭으로 올라가지 않고 문제 1번 헤더로 정확히 맞춰주는 함수
 function scrollToExamStart() {
     const examHeader = document.querySelector(".examHeader");
     if (examHeader) {
         const rect = examHeader.getBoundingClientRect();
-        const targetScrollY = window.scrollY + rect.top - 16; // 상단 16px 여백 유지
+        const targetScrollY = window.scrollY + rect.top - 16;
         window.scrollTo({ top: Math.max(0, targetScrollY), behavior: "smooth" });
     }
 }
 
-// 2. 입력칸 포커스 시 가시 영역 중앙 기준 ±4행(약 ±75px) 범위를 벗어나면 부드럽게 화면을 맞춰주는 함수
 function smartScrollToInput(el, forceImmediateCenter = false) {
     if (!el) return;
     setTimeout(() => {
@@ -581,15 +697,13 @@ function smartScrollToInput(el, forceImmediateCenter = false) {
         const viewportHeight = vv ? vv.height : window.innerHeight;
         const offsetTop = vv ? vv.offsetTop : 0;
 
-        // 하단 고정 채점바(약 70px)를 제외한 실제 유효 가시 영역 계산
         const gradeBarHeight = 70;
         const usableHeight = Math.max(160, viewportHeight - gradeBarHeight);
-        const idealCenterY = offsetTop + (usableHeight * 0.46); // 시야 중앙보다 살짝 위(최적 타이핑 위치)
+        const idealCenterY = offsetTop + (usableHeight * 0.46);
 
         const rect = el.getBoundingClientRect();
         const elCenterY = rect.top + (rect.height / 2);
 
-        // 데드존(안전 범위): 약 ±3.5~4행 (75px). 이 안에 있으면 화면 흔들림 방지!
         const deadZone = 75;
         const diff = elCenterY - idealCenterY;
 
@@ -603,23 +717,20 @@ function smartScrollToInput(el, forceImmediateCenter = false) {
 function updateUIContext() {
     currentAppMode = getAppMode(currentCategory);
 
-    // 테마 설정
     if (currentUser === "ume") {
         document.body.classList.add("theme-ume");
-        document.getElementById("appMainTitle").textContent = "🌸 法学 ユニバーサル暗記 SYSTEM v24.7";
+        document.getElementById("appMainTitle").textContent = "🌸 法学 ユニバーサル暗記 SYSTEM v25.2";
         document.getElementById("personalHeader").textContent = "👤 UME";
     } else {
         document.body.classList.remove("theme-ume");
-        document.getElementById("appMainTitle").textContent = "🌿 法学 ユニバーサル暗記 SYSTEM v24.7";
+        document.getElementById("appMainTitle").textContent = "🌿 法学 ユニバーサル暗記 SYSTEM v25.2";
         document.getElementById("personalHeader").textContent = "👤 HAN";
     }
 
-    // 컨텍스트 배너 설정
     document.getElementById("bannerSubject").textContent = currentSubjectTitle;
     document.getElementById("bannerCategory").textContent = currentCategoryTitle;
     document.getElementById("bannerMode").textContent = currentTab === "db" ? "問題登録・管理" : "暗記・試験モード";
 
-    // 폼 표시 제어
     ["ox", "def", "slot"].forEach(mode => document.getElementById(`form-${mode}`).classList.add("hidden"));
     document.getElementById(`form-${currentAppMode}`).classList.remove("hidden");
 
@@ -670,66 +781,156 @@ function refreshDropdowns() {
     renderTagSelect();
 }
 
-/* ================= 💡 공통 텍스트 서식 파서 (## 한정 빈 줄 추가) ================= */
+/* ================= 🌳 중첩 트리 스택(Nested Tree Stack) 서식 파서 (v25.2) ================= */
 function formatText(str) {
     if (!str) return "";
     
+    // 1. >인용문< 토큰화 및 내부 --- 처리
     let formatted = str.replace(/>([\s\S]*?)</g, (match, inner) => {
         let safeInner = inner.replace(/^[ \t]*---[ \t]*$/gm, "{{QUOTE_HR}}");
         safeInner = safeInner.replace(/\n/g, "{{QUOTE_BR}}");
         return `{{QUOTE_START}}${safeInner}{{QUOTE_END}}`;
     });
 
-    formatted = formatted.replace(/\*\*\*([\s\S]*?)\*\*\*/g, '<mark class="hl-pen">$1</mark>');
+    // 2. !!!하이라이트!!!
+    formatted = formatted.replace(/!!!([\s\S]*?)!!!/g, '<mark class="hl-pen">$1</mark>');
+    
+    // 3. ///굵은글씨///
     formatted = formatted.replace(/\/\/\/([\s\S]*?)\/\/\//g, "<b>$1</b>");
 
+    const restoreQuotes = (text) => {
+        return text.replace(/\{\{QUOTE_START\}\}([\s\S]*?)\{\{QUOTE_END\}\}/g, (m, inner) => {
+            let restoredInner = inner.replace(/\{\{QUOTE_BR\}\}/g, "\n");
+            restoredInner = restoredInner.replace(/\n?\{\{QUOTE_HR\}\}\n?/g, '<hr class="quote-hr">');
+            return `<span class="namu-quote">${restoredInner}</span>`;
+        });
+    };
+
     let lines = formatted.split("\n");
-    let h2Count = 0, h3Count = 0, dashCount = 0, currentLevel = 0; 
+    let h2Count = 0, h3Count = 0, dashCount = 0;
 
-    let resultLines = lines.map((line, index) => {
+    // 🌳 열린 컨테이너 스택 관리
+    let stack = [];
+    let out = [];
+
+    const closeAllStars = () => {
+        while (stack.length > 0 && stack[stack.length - 1].type === "star") {
+            stack.pop();
+            out.push("</div>");
+        }
+    };
+
+    const closeStarsGe = (targetDepth) => {
+        while (stack.length > 0 && stack[stack.length - 1].type === "star" && stack[stack.length - 1].depth >= targetDepth) {
+            stack.pop();
+            out.push("</div>");
+        }
+    };
+
+    const closeH3 = () => {
+        closeAllStars();
+        if (stack.length > 0 && stack[stack.length - 1].type === "h3") {
+            stack.pop();
+            out.push("</div>");
+        }
+    };
+
+    const closeH2 = () => {
+        closeH3();
+        if (stack.length > 0 && stack[stack.length - 1].type === "h2") {
+            stack.pop();
+            out.push("</div>");
+        }
+    };
+
+    lines.forEach((line, index) => {
         let trimmed = line.trim();
-        let indentClass = currentLevel === 3 ? "indent-under-h3" : (currentLevel === 2 ? "indent-under-h2" : "");
 
-        const restoreQuotes = (text, applyBlockIndent = false) => {
-            return text.replace(/\{\{QUOTE_START\}\}([\s\S]*?)\{\{QUOTE_END\}\}/g, (m, inner) => {
-                let restoredInner = inner.replace(/\{\{QUOTE_BR\}\}/g, "\n");
-                restoredInner = restoredInner.replace(/\n?\{\{QUOTE_HR\}\}\n?/g, '<hr class="quote-hr">');
-                let qIndent = applyBlockIndent ? indentClass : "";
-                return `<span class="namu-quote ${qIndent}">${restoredInner}</span>`;
-            });
-        };
-
+        // 1. ### 대제목: 모든 열린 트리 닫고 최상위에 출력 + (-) 카운터 리셋
         if (trimmed.startsWith("###")) {
-            currentLevel = 0;
-            return `<span class="custom-h1"># ${restoreQuotes(trimmed.replace(/^###\s?/, ""), false)}</span>`;
+            closeH2();
+            dashCount = 0;
+            let content = restoreQuotes(trimmed.replace(/^###\s?/, ""));
+            out.push(`<div class="custom-h1"># ${content}</div>`);
+            return;
         }
+
+        // 2. ## 주제: 이전 ## 닫고, 새 ## 타이틀 출력 후 .branch-h2 컨테이너 오픈!
         if (trimmed.startsWith("##")) {
-            h2Count++; h3Count = 0; currentLevel = 2;
+            closeH2();
+            h2Count++; h3Count = 0; dashCount = 0;
             let prevTrimmed = index > 0 ? lines[index - 1].trim() : "";
-            let addEmptyLine = (index > 0 && prevTrimmed !== "") ? "\n" : "";
-            return addEmptyLine + `<span class="custom-h2">${h2Count}. ${restoreQuotes(trimmed.replace(/^##\s?/, ""), false)}</span>`;
+            if (index > 0 && prevTrimmed !== "") {
+                out.push(`<div class="tree-empty-line"></div>`);
+            }
+            let content = restoreQuotes(trimmed.replace(/^##\s?/, ""));
+            out.push(`<div class="custom-h2">${h2Count}. ${content}</div>`);
+            out.push(`<div class="tree-branch branch-h2">`);
+            stack.push({ type: "h2" });
+            return;
         }
+
+        // 3. # 소제목: 이전 #와 하위 *만 닫고(상위 ## 컨테이너는 유지), 새 # 타이틀 출력 후 .branch-h3 오픈!
         if (trimmed.startsWith("#")) {
-            h3Count++; currentLevel = 3;
+            closeH3();
+            h3Count++; dashCount = 0;
             let currentH2 = h2Count === 0 ? 1 : h2Count;
-            return `<span class="custom-h3">${currentH2}.${h3Count}. ${restoreQuotes(trimmed.replace(/^#\s?/, ""), false)}</span>`;
+            let content = restoreQuotes(trimmed.replace(/^#\s?/, ""));
+            out.push(`<div class="custom-h3">${currentH2}.${h3Count}. ${content}</div>`);
+            out.push(`<div class="tree-branch branch-h3">`);
+            stack.push({ type: "h3" });
+            return;
         }
+
+        // 4. *, **, *** 하위 분류 컨테이너:
+        // 같은 레벨이거나 더 깊은 *는 닫고 새로 열어 형제 요소 간에 선이 분리(margin-top:5px)되도록 처리!
+        // 부모 *는 열려 있으므로 부모 선은 자식들을 모두 커버하며 내려감!
+        let starMatch = trimmed.match(/^(\*{1,3})(p|exc|r|eg|neg)?(?=\s|$)\s*(.*)/);
+        if (starMatch) {
+            let stars = starMatch[1].length; // 1, 2, 3
+            let mod = starMatch[2] || "default";
+            let content = restoreQuotes(starMatch[3]);
+
+            closeStarsGe(stars);
+
+            let currentStarDepth = stack.filter(s => s.type === "star").reduce((max, s) => Math.max(max, s.depth), 0);
+            while (currentStarDepth + 1 < stars) {
+                currentStarDepth++;
+                out.push(`<div class="tree-branch" style="border-left:none;">`);
+                stack.push({ type: "star", depth: currentStarDepth });
+            }
+
+            out.push(`<div class="tree-branch branch-star branch-star-${mod}">`);
+            stack.push({ type: "star", depth: stars });
+            out.push(`<div class="tree-line">${content}</div>`);
+            return;
+        }
+
+        // 5. - 항목
         if (trimmed.startsWith("-")) {
+            closeAllStars();
             dashCount++;
-            return `<span class="custom-list ${indentClass}">(${dashCount}) ${restoreQuotes(trimmed.replace(/^-\s?/, ""), false)}</span>`;
+            let content = restoreQuotes(trimmed.replace(/^-\s?/, ""));
+            out.push(`<div class="tree-line custom-list">(${dashCount}) ${content}</div>`);
+            return;
         }
-        if (trimmed.startsWith("{{QUOTE_START}}") && trimmed.endsWith("{{QUOTE_END}}")) {
-            return restoreQuotes(trimmed, true);
-        }
+
+        // 6. 일반 본문 줄: 열려있던 * 분류를 모두 닫고 제목(##, #) 레벨로 복귀
         if (trimmed !== "") {
-            let processedLine = restoreQuotes(line, false);
-            if (indentClass !== "") return `<span class="${indentClass}">${processedLine}</span>`;
-            return processedLine;
+            closeAllStars();
+            let content = restoreQuotes(line.replace(/^[ \t]+/, ""));
+            out.push(`<div class="tree-line">${content}</div>`);
+            return;
         }
-        return line;
+
+        // 7. 빈 줄
+        closeAllStars();
+        out.push(`<div class="tree-empty-line"></div>`);
     });
 
-    return resultLines.join("\n");
+    closeH2();
+
+    return out.join("");
 }
 
 /* ================= 탭 전환 이벤트 ================= */
@@ -890,7 +1091,7 @@ function renderDB() {
 
             if (currentAppMode === "ox") {
                 let ansBadge = `<span style="font-weight:800; font-size:15px; color:${q.answer === 'O' ? 'var(--correct-color)':'var(--wrong-color)'}">[正解: ${q.answer === 'O' ? '⭕' : '❌'}]</span>`;
-                let noteHtml = q.note ? `<div style="margin-top:10px; padding:10px; background:#f8fafc; border-left:3px solid var(--accent-primary); font-size:14px; white-space:pre-wrap;">💡 ${formatText(q.note)}</div>` : "";
+                let noteHtml = q.note ? `<div style="margin-top:10px; padding:10px; background:#f8fafc; border-left:3px solid var(--accent-primary); font-size:14px;">💡 ${formatText(q.note)}</div>` : "";
                 html += `<div class="question">${actionBtns}${ansBadge}${tagHtml}<div class="q-body">${formatText(q.question)}</div>${noteHtml}</div>`;
             } else if (currentAppMode === "def") {
                 let termHeader = q.defTerm ? `<div style="font-size:17px; font-weight:800; color:var(--accent-dark); margin-bottom:6px;">📘 ${q.defTerm}</div>` : "";
@@ -973,7 +1174,7 @@ document.getElementById("btnStartTag").addEventListener("click", () => {
     startTest(sel === "all" ? db : db.filter(q => q.tags && q.tags.includes(sel)), sel === "all" ? "全体ランダム" : `#${sel}`);
 });
 
-/* ================= 💡 동적 시험 화면 렌더링 (스마트 포커스 & 스크롤 연동) ================= */
+/* ================= 💡 동적 시험 화면 렌더링 ================= */
 function renderExam(testData, title, shouldFocusFirst = true) {
     let html = `<div class="examSession"><div class="examHeader" style="font-size:16px; font-weight:800; color:var(--accent-dark); margin-top:15px; margin-bottom:12px;">${title}</div>`;
     const hideTarget = document.getElementById("defHideTarget").value;
@@ -993,7 +1194,7 @@ function renderExam(testData, title, shouldFocusFirst = true) {
                 let hintHtml = q.userTextAns !== null && sClass === "status-wrong" ? `<span class="inline-wrong-hint">(${q.defTerm})</span>` : "";
                 html += `<div class="question"><div style="font-size:18px; font-weight:800; color:#0f172a; margin-bottom:4px;">${i + 1}.${lectureTitle}</div>${tagHtml}<div style="margin-top:8px; margin-bottom:8px;"><span class="inline-blank-container"><input class="inline-input ${sClass}" id="def_ans_${i}" style="width:180px;" placeholder="定義名を入力" value="${userVal}" enterkeyhint="next">${hintHtml}</span></div><div class="q-body">${formatText(q.question)}</div></div>`;
             } else {
-                let ansBox = q.userTextAns !== null && sClass === "status-wrong" ? `<div class="def-answer-box" style="display:block;"><b>正解:</b>\n${formatText(q.question)}</div>` : "";
+                let ansBox = q.userTextAns !== null && sClass === "status-wrong" ? `<div class="def-answer-box" style="display:block;"><b>正解:</b><div class="q-body">${formatText(q.question)}</div></div>` : "";
                 html += `<div class="question"><div style="font-size:18px; font-weight:800; color:#0f172a; margin-bottom:4px;">${i + 1}.${lectureTitle}</div>${tagHtml}<div style="font-size:17px; font-weight:800; color:var(--accent-dark); margin-top:6px; margin-bottom:8px;">📘 ${q.defTerm}</div><textarea class="def-textarea ${sClass}" id="def_ans_${i}" rows="4" placeholder="定義文を入力してください">${userVal}</textarea>${ansBox}</div>`;
             }
         } else {
@@ -1029,10 +1230,8 @@ function renderExam(testData, title, shouldFocusFirst = true) {
         setTimeout(() => {
             const inputs = Array.from(document.querySelectorAll(".inline-input:not([disabled]), .def-textarea:not([disabled])"));
             inputs.forEach((input, index) => {
-                // 포커스될 때마다 ±4행 데드존 기반 스마트 스크롤 작동
                 input.addEventListener("focus", () => smartScrollToInput(input, false));
 
-                // 빈칸(input)에서 엔터 입력 시 다음 빈칸으로 포커스 & 스마트 스크롤
                 if (input.classList.contains("inline-input")) {
                     input.addEventListener("keydown", e => {
                         if (e.key === "Enter") {
@@ -1049,7 +1248,6 @@ function renderExam(testData, title, shouldFocusFirst = true) {
                 }
             });
 
-            // 시험 시작 또는 재출제 시 첫 번째 입력칸으로 즉시 포커스 및 화면 중앙 정렬
             if (shouldFocusFirst) {
                 if (inputs.length > 0) {
                     inputs[0].focus({ preventScroll: true });
@@ -1083,10 +1281,10 @@ function handleSelectAnswerOX(qIdx, chosen) {
 
     if (chosen === correctAns) {
         resBox.className = "ox-result-box correct";
-        resBox.innerHTML = `<b style="color:var(--correct-color);">⭕ 正解！</b> (あなたの選択: ${chosen})<div style="margin-top:6px; white-space:pre-wrap;">💡 ${formattedNote}</div>`;
+        resBox.innerHTML = `<b style="color:var(--correct-color);">⭕ 正解！</b> (あなたの選択: ${chosen})<div class="q-body" style="margin-top:6px;">💡 ${formattedNote}</div>`;
     } else {
         resBox.className = "ox-result-box wrong";
-        resBox.innerHTML = `<b style="color:var(--wrong-color);">❌ 不正解！</b> (あなたの選択: ${chosen} / 正解: ${correctAns})<div style="margin-top:6px; white-space:pre-wrap;">💡 ${formattedNote}</div>`;
+        resBox.innerHTML = `<b style="color:var(--wrong-color);">❌ 不正解！</b> (あなたの選択: ${chosen} / 正解: ${correctAns})<div class="q-body" style="margin-top:6px;">💡 ${formattedNote}</div>`;
     }
 
     if (Object.keys(oxUserAnswers).length === currentTest.length) {
@@ -1127,7 +1325,6 @@ document.getElementById("btnGrade").addEventListener("click", () => {
             }
         });
     }
-    // 채점 직후에는 사용자가 결과를 확인할 수 있도록 강제 포커스 이동을 하지 않음(false)
     renderExam(currentTest, document.querySelector(".examHeader").innerText, false);
     
     if (hasWrong) { 
@@ -1140,7 +1337,7 @@ document.getElementById("btnGrade").addEventListener("click", () => {
     }
 });
 
-/* ================= 오답 복습 (재출제 - 문제 1번으로 정확히 포커스 & 스크롤) ================= */
+/* ================= 오답 복습 (재출제) ================= */
 document.getElementById("btnRetryWrong").addEventListener("click", () => {
     let wrong = [];
     if (currentAppMode === "ox") {
@@ -1159,7 +1356,6 @@ document.getElementById("btnRetryWrong").addEventListener("click", () => {
     
     if (wrong.length > 0) {
         currentTest = wrong;
-        // shouldFocusFirst = true 로 호출하여 페이지 맨 위(top:0)가 아닌 재출제 1번 문제로 곧바로 포커스 & 스크롤!
         renderExam(currentTest, `🔁 [${currentSubjectTitle}] 誤答復習 (${currentTest.length}問)`, true);
         document.getElementById("btnRetryWrong").classList.add("hidden");
     } else { 
