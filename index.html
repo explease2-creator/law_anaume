@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>法学 ユニバーサル暗記 SYSTEM v25.3</title>
+<title>法学 ユニバーサル暗記 SYSTEM v25.5</title>
 
 <style>
 /* 🌿 기본 테마 (HAN - 나무위키 그린) */
@@ -363,13 +363,13 @@ textarea:focus, input:focus, select:focus {
     margin-bottom: 5px;
 }
 
-/* 모든 옵션을 3px 단일선으로 완벽 통일! */
+/* 모든 옵션을 3px 단일선으로 완벽 통일 */
 .branch-star-default { border-left: 3px solid var(--tree-line); }
 .branch-star-p       { border-left: 3px solid #ea580c; } /* 주황색 */
 .branch-star-exc     { border-left: 3px solid #1d4ed8; } /* 파란색 */
 .branch-star-r       { border-left: 3px solid #0e7490; } /* 짙은 청록/푸른색 */
 .branch-star-eg      { border-left: 3px solid #be123c; } /* 와인/로즈 레드 (긍정·예시) */
-.branch-star-neg     { border-left: 3px solid #15803d; } /* 포레스트 에메랄드 그린 (eg의 명확한 보색 반대 개념) */
+.branch-star-neg     { border-left: 3px solid #15803d; } /* 포레스트 에메랄드 그린 (eg의 보색 반대 개념) */
 
 /* 각 텍스트 행 */
 .tree-line {
@@ -411,14 +411,30 @@ hr.quote-hr { border: 0; border-top: 1px solid #c0c0c0; margin: 6px 0; }
 
 .tag-badge { display: inline-block; background: var(--accent-light); color: var(--accent-dark); font-size: 11px; padding: 4px 10px; border-radius: 6px; margin-right: 6px; margin-top: 4px; font-weight: 700; }
 
-/* 빈칸입력 (Slot & Def) */
+/* 빈칸표시(DB 열람용: 일반 굵기 + 색상 + 단일 밑줄) */
+.blank-num {
+    display: inline;
+    color: var(--accent-dark);
+    font-weight: 400;
+    margin-right: 2px;
+}
+.blank-text {
+    display: inline;
+    color: var(--accent-dark);
+    font-weight: 400;
+    text-decoration: underline;
+    text-decoration-color: var(--accent-primary);
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 3px;
+}
+
+/* 빈칸입력 (Slot & Def 시험용) */
 .inline-blank-container { display: inline-flex; flex-wrap: wrap; align-items: center; vertical-align: middle; margin: 1px 3px; max-width: 100%; }
 .inline-input { display: inline-block; width: auto; min-width: 85px; max-width: 100%; padding: 4px 8px; margin: 0; font-size: 15px; font-weight: 700; border: 2px solid var(--accent-primary); border-radius: 8px; background: #ffffff; color: var(--text-main); outline: none; text-align: center; box-sizing: border-box; transition: all 0.15s ease; }
 .inline-input:focus { box-shadow: 0 0 0 3px var(--accent-light); }
 .inline-input.status-correct { background-color: #ecfdf5; border-color: var(--correct-color); color: var(--correct-color); }
 .inline-input.status-wrong { background-color: #ffe4e6; border-color: var(--wrong-color); color: var(--wrong-color); }
 .inline-wrong-hint { font-size: 13px; font-weight: 700; color: var(--wrong-color); margin-left: 6px; display: inline; }
-.blankSymbol { display: inline-block; color: var(--accent-dark); font-weight: 700; border-bottom: 2px solid var(--accent-primary); padding: 0 6px; margin: 0 2px; }
 .def-textarea { width: 100%; margin-top: 10px; border: 2px solid var(--accent-primary); border-radius: 8px; padding: 10px; font-size: 15px; font-weight: 600; }
 .def-textarea.status-correct { background-color: #ecfdf5; border-color: var(--correct-color); }
 .def-textarea.status-wrong { background-color: #ffe4e6; border-color: var(--wrong-color); }
@@ -452,7 +468,7 @@ hr.quote-hr { border: 0; border-top: 1px solid #c0c0c0; margin: 6px 0; }
 <body>
 
 <div class="top-bar">
-    <div class="top-title" id="appMainTitle">🌿 法学 ユニバーサル暗記 SYSTEM v25.3</div>
+    <div class="top-title" id="appMainTitle">🌿 法学 ユニバーサル暗記 SYSTEM v25.5</div>
     <div class="user-tab">
         <button class="btn-user active" data-user="han">👤 HAN</button>
         <button class="btn-user" data-user="ume">👤 UME</button>
@@ -702,11 +718,11 @@ function updateUIContext() {
 
     if (currentUser === "ume") {
         document.body.classList.add("theme-ume");
-        document.getElementById("appMainTitle").textContent = "🌸 法学 ユニバーサル暗記 SYSTEM v25.3";
+        document.getElementById("appMainTitle").textContent = "🌸 法学 ユニバーサル暗記 SYSTEM v25.5";
         document.getElementById("personalHeader").textContent = "👤 UME";
     } else {
         document.body.classList.remove("theme-ume");
-        document.getElementById("appMainTitle").textContent = "🌿 法学 ユニバーサル暗記 SYSTEM v25.3";
+        document.getElementById("appMainTitle").textContent = "🌿 法学 ユニバーサル暗記 SYSTEM v25.5";
         document.getElementById("personalHeader").textContent = "👤 HAN";
     }
 
@@ -764,7 +780,7 @@ function refreshDropdowns() {
     renderTagSelect();
 }
 
-/* ================= 🌳 중첩 트리 스택(Nested Tree Stack) 서식 파서 (v25.3) ================= */
+/* ================= 🌳 중첩 트리 스택(Nested Tree Stack) 서식 파서 (v25.5) ================= */
 function formatText(str) {
     if (!str) return "";
     
@@ -1079,7 +1095,10 @@ function renderDB() {
                 html += `<div class="question">${actionBtns}${termHeader}${tagHtml}<div class="q-body">${formatText(q.question)}</div></div>`;
             } else {
                 let idxCounter = 0;
-                let formattedQ = formatText(q.question).replace(/\{.*?\}/g, () => `<span class="blankSymbol">${getCircNum(idxCounter++)} ___</span>`);
+                // DB 열람 화면에서는 가리지 않고 일반 굵기의 (n) 실제내용(밑줄) 형태로 표시
+                let formattedQ = formatText(q.question).replace(/\{(.*?)\}/g, (match, inner) => {
+                    return `<span class="blank-num">${getCircNum(idxCounter++)}</span><span class="blank-text">${inner}</span>`;
+                });
                 html += `<div class="question">${actionBtns}${tagHtml}<div class="q-body">${formattedQ}</div></div>`;
             }
         });
