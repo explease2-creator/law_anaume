@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>法学 ユニバーサル暗記 SYSTEM v25.8</title>
+<title>法学 ユニバーサル暗記 SYSTEM v25.9</title>
 
 <style>
 /* 🌿 기본 테마 (HAN - 나무위키 그린) */
@@ -373,11 +373,11 @@ textarea:focus, input:focus, select:focus {
 
 /* 모든 옵션을 3px 단일선으로 완벽 통일 */
 .branch-star-default { border-left: 3px solid var(--tree-line); }
-.branch-star-p       { border-left: 3px solid #ea580c; } /* 주황색 */
-.branch-star-exc     { border-left: 3px solid #1d4ed8; } /* 파란색 */
+.branch-star-p       { border-left: 3px solid #ea580c; } /* 밝은 주황색 */
+.branch-star-exc     { border-left: 3px solid #3b82f6; } /* p 정도 밝기의 선명한 파란색 */
 .branch-star-r       { border-left: 3px solid #0e7490; } /* 짙은 청록/푸른색 */
-.branch-star-eg      { border-left: 3px solid #be123c; } /* 와인/로즈 레드 (긍정·예시) */
-.branch-star-neg     { border-left: 3px solid #15803d; } /* 포레스트 에메랄드 그린 (eg의 보색 반대 개념) */
+.branch-star-eg      { border-left: 3px solid #be123c; } /* 탁한 와인/로즈 레드 */
+.branch-star-neg     { border-left: 3px solid #355387; } /* eg 정도로 탁한 스틸 블루 */
 
 /* 각 텍스트 행 */
 .tree-line {
@@ -476,7 +476,7 @@ hr.quote-hr { border: 0; border-top: 1px solid #c0c0c0; margin: 6px 0; }
 <body>
 
 <div class="top-bar">
-    <div class="top-title" id="appMainTitle">🌿 法学 ユニバーサル暗記 SYSTEM v25.8</div>
+    <div class="top-title" id="appMainTitle">🌿 法学 ユニバーサル暗記 SYSTEM v25.9</div>
     <div class="user-tab">
         <button class="btn-user active" data-user="han">👤 HAN</button>
         <button class="btn-user" data-user="ume">👤 UME</button>
@@ -726,11 +726,11 @@ function updateUIContext() {
 
     if (currentUser === "ume") {
         document.body.classList.add("theme-ume");
-        document.getElementById("appMainTitle").textContent = "🌸 法学 ユニバーサル暗記 SYSTEM v25.8";
+        document.getElementById("appMainTitle").textContent = "🌸 法学 ユニバーサル暗記 SYSTEM v25.9";
         document.getElementById("personalHeader").textContent = "👤 UME";
     } else {
         document.body.classList.remove("theme-ume");
-        document.getElementById("appMainTitle").textContent = "🌿 法学 ユニバーサル暗記 SYSTEM v25.8";
+        document.getElementById("appMainTitle").textContent = "🌿 法学 ユニバーサル暗記 SYSTEM v25.9";
         document.getElementById("personalHeader").textContent = "👤 HAN";
     }
 
@@ -788,7 +788,7 @@ function refreshDropdowns() {
     renderTagSelect();
 }
 
-/* ================= 🌳 중첩 트리 스택(Nested Tree Stack) 서식 파서 (v25.8: 최대 7단계 * 지원) ================= */
+/* ================= 🌳 중첩 트리 스택(Nested Tree Stack) 서식 파서 (v25.9: 최대 7단계 * 지원) ================= */
 function formatText(str) {
     if (!str) return "";
     
