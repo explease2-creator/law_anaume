@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>法学 ユニバーサル暗記 SYSTEM v25.9</title>
+<title>法学 ユニバーサル暗記 SYSTEM v26.1</title>
 
 <style>
 /* 🌿 기본 테마 (HAN - 나무위키 그린) */
@@ -419,19 +419,19 @@ hr.quote-hr { border: 0; border-top: 1px solid #c0c0c0; margin: 6px 0; }
 
 .tag-badge { display: inline-block; background: var(--accent-light); color: var(--accent-dark); font-size: 11px; padding: 4px 10px; border-radius: 6px; margin-right: 6px; margin-top: 4px; font-weight: 700; }
 
-/* 빈칸표시(DB 열람용: 번호 700 + 본문 일반 굵기 + 2px 밑줄) */
+/* 빈칸표시(DB 열람·인쇄용: 사용자 무관 고정 컬러 - 빨간 셀로판지 암기 대응) */
 .blank-num {
     display: inline;
-    color: var(--accent-dark);
+    color: #d9534f;
     font-weight: 700;
     margin-right: 2px;
 }
 .blank-text {
     display: inline;
-    color: var(--accent-dark);
+    color: #f4dada;
     font-weight: 400;
     text-decoration: underline;
-    text-decoration-color: var(--accent-primary);
+    text-decoration-color: #f4dada;
     text-decoration-thickness: 2px;
     text-underline-offset: 3px;
 }
@@ -470,13 +470,91 @@ hr.quote-hr { border: 0; border-top: 1px solid #c0c0c0; margin: 6px 0; }
 .modal-actions { display: flex; gap: 10px; margin-top: 16px; }
 .modal-actions button { flex: 1; padding:12px; border:none; border-radius:8px; font-weight:bold; cursor:pointer;}
 .hidden { display: none !important; }
+
+/* ================= 🖨️ 개별 인쇄 / PDF 출력 전용 스타일 ================= */
+#printArea {
+    display: none;
+}
+
+@media print {
+    @page {
+        size: A4 portrait;
+        margin: 14mm;
+    }
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    body {
+        background: #ffffff !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: none !important;
+    }
+    body > *:not(#printArea) {
+        display: none !important;
+    }
+    #printArea {
+        display: block !important;
+        font-size: 14px;
+        line-height: 1.65;
+        color: #1e293b;
+    }
+    #printArea .q-body {
+        padding-right: 0 !important;
+        margin-top: 6px;
+    }
+    .print-meta {
+        font-size: 12px;
+        font-weight: 700;
+        color: #64748b;
+        margin-bottom: 4px;
+    }
+    .print-lecture {
+        font-size: 20px;
+        font-weight: 800;
+        color: #0f172a;
+        border-left: 5px solid var(--accent-primary);
+        padding-left: 10px;
+        margin-bottom: 6px;
+        line-height: 1.3;
+    }
+    .print-tags {
+        margin-bottom: 6px;
+    }
+    .print-divider {
+        border: 0;
+        border-top: 1.5px solid #cbd5e1;
+        margin: 10px 0 14px 0;
+    }
+    .print-ox-note {
+        margin-top: 12px;
+        padding: 10px 12px;
+        background: #f8fafc;
+        border-left: 3px solid var(--accent-primary);
+        font-size: 13.5px;
+    }
+    /* 페이지 넘김 최적화: 제목 혼자 남기 방지, 한 줄·인용문 반토막 방지, 긴 트리는 자연스럽게 여러 장으로 분할 */
+    .custom-h1, .custom-h2, .custom-h3 {
+        break-after: avoid;
+        page-break-after: avoid;
+    }
+    .tree-line, .namu-quote {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+    .tree-branch {
+        break-inside: auto;
+        page-break-inside: auto;
+    }
+}
 </style>
 </head>
 
 <body>
 
 <div class="top-bar">
-    <div class="top-title" id="appMainTitle">🌿 法学 ユニバーサル暗記 SYSTEM v25.9</div>
+    <div class="top-title" id="appMainTitle">🌿 法学 ユニバーサル暗記 SYSTEM v26.1</div>
     <div class="user-tab">
         <button class="btn-user active" data-user="han">👤 HAN</button>
         <button class="btn-user" data-user="ume">👤 UME</button>
@@ -648,6 +726,9 @@ hr.quote-hr { border: 0; border-top: 1px solid #c0c0c0; margin: 6px 0; }
     </div>
 </div>
 
+<!-- 🖨️ 개별 인쇄 / PDF 출력 전용 컨테이너 (평소엔 숨김) -->
+<div id="printArea"></div>
+
 <!-- ================= JAVASCRIPT ================= -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
@@ -726,11 +807,11 @@ function updateUIContext() {
 
     if (currentUser === "ume") {
         document.body.classList.add("theme-ume");
-        document.getElementById("appMainTitle").textContent = "🌸 法学 ユニバーサル暗記 SYSTEM v25.9";
+        document.getElementById("appMainTitle").textContent = "🌸 法学 ユニバーサル暗記 SYSTEM v26.1";
         document.getElementById("personalHeader").textContent = "👤 UME";
     } else {
         document.body.classList.remove("theme-ume");
-        document.getElementById("appMainTitle").textContent = "🌿 法学 ユニバーサル暗記 SYSTEM v25.9";
+        document.getElementById("appMainTitle").textContent = "🌿 法学 ユニバーサル暗記 SYSTEM v26.1";
         document.getElementById("personalHeader").textContent = "👤 HAN";
     }
 
@@ -788,7 +869,7 @@ function refreshDropdowns() {
     renderTagSelect();
 }
 
-/* ================= 🌳 중첩 트리 스택(Nested Tree Stack) 서식 파서 (v25.9: 최대 7단계 * 지원) ================= */
+/* ================= 🌳 중첩 트리 스택(Nested Tree Stack) 서식 파서 (v26.1: 최대 7단계 * 지원) ================= */
 function formatText(str) {
     if (!str) return "";
     
@@ -981,7 +1062,7 @@ const bindOxToggle = (btnO, btnX, stateSetter) => {
 bindOxToggle(document.getElementById("choiceO"), document.getElementById("choiceX"), val => oxSelectedAns = val);
 bindOxToggle(document.getElementById("editChoiceO"), document.getElementById("editChoiceX"), val => editOxSelectedAns = val);
 
-/* ================= 문제 등록/수정/삭제 ================= */
+/* ================= 문제 등록/수정/삭제/인쇄 ================= */
 const parseTags = tagStr => (tagStr || "").split(",").map(t => t.trim()).filter(t => t.length > 0);
 
 document.getElementById("btnAddQ").addEventListener("click", () => {
@@ -1016,6 +1097,48 @@ function deleteQ(index) {
     db.splice(index, 1);
     db = db.map((q, i) => ({ ...q, id: i + 1 }));
     saveToFirestore(db);
+}
+
+/* 🖨️ 개별 문제 PDF / 인쇄 출력 함수 (고정 배율, 길이 제한 없이 자연 분할) */
+function printQ(index) {
+    const q = db[index];
+    if (!q) return;
+
+    const printArea = document.getElementById("printArea");
+    let metaHtml = `<div class="print-meta">${currentSubjectTitle} ｜ ${currentCategoryTitle}</div>`;
+    let lectureHtml = `<div class="print-lecture">${q.caseName || "未分類"}</div>`;
+    let tagHtml = q.tags && q.tags.length > 0 ? `<div class="print-tags">${q.tags.map(t => `<span class="tag-badge">#${t}</span>`).join("")}</div>` : "";
+    let bodyHtml = "";
+
+    if (currentAppMode === "ox") {
+        let ansBadge = `<div style="font-weight:800; font-size:15px; margin-bottom:8px; color:${q.answer === 'O' ? 'var(--correct-color)':'var(--wrong-color)'}">[正解: ${q.answer === 'O' ? '⭕' : '❌'}]</div>`;
+        let noteHtml = q.note ? `<div class="print-ox-note">💡 ${formatText(q.note)}</div>` : "";
+        bodyHtml = `${ansBadge}<div class="q-body">${formatText(q.question)}</div>${noteHtml}`;
+    } else if (currentAppMode === "def") {
+        let termHeader = q.defTerm ? `<div style="font-size:17px; font-weight:800; color:var(--accent-dark); margin-bottom:8px;">📘 ${q.defTerm}</div>` : "";
+        bodyHtml = `${termHeader}<div class="q-body">${formatText(q.question)}</div>`;
+    } else {
+        let idxCounter = 0;
+        let formattedQ = formatText(q.question).replace(/\{(.*?)\}/g, (match, inner) => {
+            return `<span class="blank-num">${getCircNum(idxCounter++)}</span><span class="blank-text">${inner}</span>`;
+        });
+        bodyHtml = `<div class="q-body">${formattedQ}</div>`;
+    }
+
+    printArea.innerHTML = `${metaHtml}${lectureHtml}${tagHtml}<hr class="print-divider">${bodyHtml}`;
+
+    // PDF 저장 시 기본 파일명이 깔끔하게 지정되도록 문서 타이틀 임시 변경
+    const originalTitle = document.title;
+    const cleanSub = currentSubjectTitle.replace(/[^\u3000-\u9FFF\w]/g, "");
+    const cleanCat = currentCategoryTitle.replace(/[^\u3000-\u9FFF\w]/g, "");
+    const cleanLec = (q.caseName || "未分類").replace(/[\\/:*?"<>|]/g, "_");
+    document.title = `${cleanSub}_${cleanCat}_${cleanLec}`;
+
+    window.print();
+
+    setTimeout(() => {
+        document.title = originalTitle;
+    }, 500);
 }
 
 function openEditModal(index) {
@@ -1092,7 +1215,7 @@ function renderDB() {
         html += `<div class="group"><div class="group-title">${group}</div>`;
         grouped[group].forEach(q => {
             let tagHtml = q.tags && q.tags.length > 0 ? `<div>${q.tags.map(t => `<span class="tag-badge">#${t}</span>`).join("")}</div>` : "";
-            let actionBtns = `<div style="float:right; display:flex; gap:6px;"><button class="btn-edit-q" data-idx="${q._idx}" style="background:#475569; padding:6px 10px; font-size:12px; color:white; border:none; border-radius:6px; cursor:pointer;">修正</button><button class="btn-delete" data-idx="${q._idx}" style="background:#e11d48; padding:6px 10px; font-size:12px; color:#ffffff; border:none; border-radius:6px; cursor:pointer;">削除</button></div>`;
+            let actionBtns = `<div style="float:right; display:flex; gap:6px;"><button class="btn-print-q" data-idx="${q._idx}" style="background:var(--accent-dark); padding:6px 10px; font-size:12px; color:white; border:none; border-radius:6px; cursor:pointer;">印刷</button><button class="btn-edit-q" data-idx="${q._idx}" style="background:#475569; padding:6px 10px; font-size:12px; color:white; border:none; border-radius:6px; cursor:pointer;">修正</button><button class="btn-delete" data-idx="${q._idx}" style="background:#e11d48; padding:6px 10px; font-size:12px; color:#ffffff; border:none; border-radius:6px; cursor:pointer;">削除</button></div>`;
 
             if (currentAppMode === "ox") {
                 let ansBadge = `<span style="font-weight:800; font-size:15px; color:${q.answer === 'O' ? 'var(--correct-color)':'var(--wrong-color)'}">[正解: ${q.answer === 'O' ? '⭕' : '❌'}]</span>`;
@@ -1103,7 +1226,7 @@ function renderDB() {
                 html += `<div class="question">${actionBtns}${termHeader}${tagHtml}<div class="q-body">${formatText(q.question)}</div></div>`;
             } else {
                 let idxCounter = 0;
-                // DB 열람 화면에서는 가리지 않고 굵은 (n) + 일반 굵기 실제내용(2px 밑줄) 형태로 표시
+                // DB 열람 화면에서는 가리지 않고 진한 레드 (n) + 연한 빨간색 실제내용(2px 밑줄) 형태로 표시
                 let formattedQ = formatText(q.question).replace(/\{(.*?)\}/g, (match, inner) => {
                     return `<span class="blank-num">${getCircNum(idxCounter++)}</span><span class="blank-text">${inner}</span>`;
                 });
@@ -1114,6 +1237,7 @@ function renderDB() {
     });
     
     document.getElementById("dbView").innerHTML = html;
+    document.querySelectorAll(".btn-print-q").forEach(btn => btn.addEventListener("click", (e) => printQ(parseInt(e.target.dataset.idx))));
     document.querySelectorAll(".btn-delete").forEach(btn => btn.addEventListener("click", (e) => deleteQ(parseInt(e.target.dataset.idx))));
     document.querySelectorAll(".btn-edit-q").forEach(btn => btn.addEventListener("click", (e) => openEditModal(parseInt(e.target.dataset.idx))));
 }
