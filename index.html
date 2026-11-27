@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>法学 ユニバーサル暗記 SYSTEM v26.3</title>
+<title>法学 ユニバーサル暗記 SYSTEM v26.6</title>
 
 <style>
 /* 🌿 기본 테마 (HAN - 나무위키 그린) */
@@ -390,6 +390,28 @@ textarea:focus, input:focus, select:focus {
 .branch-star-eg      { border-left: 3px solid #be123c; } /* 탁한 와인/로즈 레드 */
 .branch-star-neg     { border-left: 3px solid #355387; } /* eg 정도로 탁한 스틸 블루 */
 
+/* 💜 논점선언(^) 보라색 점선 박스 + 은은한 보라색 배경 (안쪽 여백 1/2 축소로 부모 선과 간격 확보) */
+.issue-box {
+    display: block;
+    background-color: rgba(124, 58, 237, 0.05);
+    border: 1.5px dashed #7c3aed;
+    border-radius: 5px;
+    padding: 2px 3px;
+    margin: 4px -4.5px;
+    box-sizing: border-box;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+.issue-box > .branch-star {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.issue-box > .custom-h1,
+.issue-box > .custom-h2,
+.issue-box > .custom-h3 {
+    margin-top: 0;
+}
+
 /* 각 텍스트 행 */
 .tree-line {
     display: block;
@@ -510,6 +532,7 @@ hr.quote-hr { border: 0; border-top: 1px solid #c0c0c0; margin: 6px 0; }
         font-size: 14px;
         line-height: 1.65;
         color: #1e293b;
+        padding: 0 9px;
     }
     #printArea .q-body {
         padding-right: 0 !important;
@@ -545,7 +568,7 @@ hr.quote-hr { border: 0; border-top: 1px solid #c0c0c0; margin: 6px 0; }
         border-left: 3px solid var(--accent-primary);
         font-size: 13.5px;
     }
-    /* 페이지 넘김 최적화: 제목 혼자 남기 방지, 한 줄·인용문 반토막 방지, 긴 트리는 자연스럽게 여러 장으로 분할 */
+    /* 페이지 넘김 최적화: 제목 혼자 남기 방지, 한 줄·인용문 반토막 방지, 긴 트리·논점박스는 자연스럽게 여러 장으로 분할 */
     .custom-h1, .custom-h2, .custom-h3 {
         break-after: avoid;
         page-break-after: avoid;
@@ -554,7 +577,7 @@ hr.quote-hr { border: 0; border-top: 1px solid #c0c0c0; margin: 6px 0; }
         break-inside: avoid;
         page-break-inside: avoid;
     }
-    .tree-branch {
+    .tree-branch, .issue-box {
         break-inside: auto;
         page-break-inside: auto;
     }
@@ -565,7 +588,7 @@ hr.quote-hr { border: 0; border-top: 1px solid #c0c0c0; margin: 6px 0; }
 <body>
 
 <div class="top-bar">
-    <div class="top-title" id="appMainTitle">🌿 法学 ユニバーサル暗記 SYSTEM v26.3</div>
+    <div class="top-title" id="appMainTitle">🌿 法学 ユニバーサル暗記 SYSTEM v26.6</div>
     <div class="user-tab">
         <button class="btn-user active" data-user="han">👤 HAN</button>
         <button class="btn-user" data-user="ume">👤 UME</button>
@@ -625,21 +648,21 @@ hr.quote-hr { border: 0; border-top: 1px solid #c0c0c0; margin: 6px 0; }
     <!-- OX 전용 -->
     <div id="form-ox" class="hidden">
         <textarea id="oxQText" class="large-q-input" placeholder="3. 問題文を入力してください
-(書式: ###大見出し / ##主題 / #小主題 / -項目 / *~*******下位(最大7段: p,exc,r,eg,neg) / >引用< / !!!ハイライト!!! / ///太字///)"></textarea>
+(書式: ###大見出し / ##主題 / #小主題 / -項目 / *~*******下位(最大7段: p,exc,r,eg,neg) / 先頭に^で論点枠 / >引用< / !!!ハイライト!!! / ///太字///)"></textarea>
         <span class="form-label">4. ⭕❌ 正解の判定</span>
         <div class="ox-select-wrapper">
             <div id="choiceO" class="ox-btn selected-o">⭕</div>
             <div id="choiceX" class="ox-btn">❌</div>
         </div>
         <span class="form-label">5. 💡 解説 (すべての書式コマンド使用可)</span>
-        <textarea id="oxNote" class="note-q-input" placeholder="解説文を入力してください (!!!ハイライト!!! や >引用<, *p など使用可能)"></textarea>
+        <textarea id="oxNote" class="note-q-input" placeholder="解説文を入力してください (!!!ハイライト!!! や >引用<, ^*, *p など使用可能)"></textarea>
     </div>
 
     <!-- 정의 전용 -->
     <div id="form-def" class="hidden">
         <input id="defTerm" placeholder="3. 定義名・概念名 (例: 行政行為)">
         <textarea id="defQText" class="large-q-input" placeholder="4. 定義文を入力してください
-(書式: ###大見出し / ##主題 / #小主題 / -項目 / *~*******下位(最大7段: p,exc,r,eg,neg) / >引用< / !!!ハイライト!!! / ///太字///)"></textarea>
+(書式: ###大見出し / ##主題 / #小主題 / -項目 / *~*******下位(最大7段: p,exc,r,eg,neg) / 先頭に^で論点枠 / >引用< / !!!ハイライト!!! / ///太字///)"></textarea>
     </div>
 
     <!-- 조문/예습용/정리/논증 전용 -->
@@ -648,6 +671,7 @@ hr.quote-hr { border: 0; border-top: 1px solid #c0c0c0; margin: 6px 0; }
 ### 大見出し (# 表示) / ## 主題 (1., 2. + 構造線) / # 小主題 (1.1. + 構造線)
 - 項目 (見出しごとに (1) から自動採番)
 * ~ ******* 下位ツリー構造 (最大7階層・末尾に p, exc, r, eg, neg で左線色変更 / 例: *p 内容)
+^ 分類先頭に ^ で論点宣言（紫点線枠 / 例: ^*, ^*p, ^##, ^#, ^-）
 >引用文< (--- で区切り線) / !!!ハイライト!!! (黄色) / ///太字/// / 空欄: {正解}"></textarea>
     </div>
 
@@ -819,11 +843,11 @@ function updateUIContext() {
 
     if (currentUser === "ume") {
         document.body.classList.add("theme-ume");
-        document.getElementById("appMainTitle").textContent = "🌸 法学 ユニバーサル暗記 SYSTEM v26.3";
+        document.getElementById("appMainTitle").textContent = "🌸 法学 ユニバーサル暗記 SYSTEM v26.6";
         document.getElementById("personalHeader").textContent = "👤 UME";
     } else {
         document.body.classList.remove("theme-ume");
-        document.getElementById("appMainTitle").textContent = "🌿 法学 ユニバーサル暗記 SYSTEM v26.3";
+        document.getElementById("appMainTitle").textContent = "🌿 法学 ユニバーサル暗記 SYSTEM v26.6";
         document.getElementById("personalHeader").textContent = "👤 HAN";
     }
 
@@ -882,7 +906,7 @@ function refreshDropdowns() {
     renderTagSelect();
 }
 
-/* ================= 🌳 중첩 트리 스택(Nested Tree Stack) 서식 파서 (v26.3: 최대 7단계 * 지원) ================= */
+/* ================= 🌳 중첩 트리 스택(Nested Tree Stack) 서식 파서 (v26.6: 논점선언 ^ 지원) ================= */
 function formatText(str) {
     if (!str) return "";
     
@@ -910,35 +934,55 @@ function formatText(str) {
     let lines = formatted.split("\n");
     let h2Count = 0, h3Count = 0, dashCount = 0;
 
-    // 🌳 열린 컨테이너 스택 관리
+    // 🌳 열린 컨테이너 스택 관리 (계층: h1 > h2 > h3 > dash > star)
     let stack = [];
     let out = [];
 
     const closeAllStars = () => {
         while (stack.length > 0 && stack[stack.length - 1].type === "star") {
-            stack.pop();
+            let popped = stack.pop();
             out.push("</div>");
+            if (popped.hasIssueWrapper) out.push("</div>");
         }
     };
 
     const closeStarsGe = (targetDepth) => {
         while (stack.length > 0 && stack[stack.length - 1].type === "star" && stack[stack.length - 1].depth >= targetDepth) {
+            let popped = stack.pop();
+            out.push("</div>");
+            if (popped.hasIssueWrapper) out.push("</div>");
+        }
+    };
+
+    const closeDash = () => {
+        closeAllStars();
+        if (stack.length > 0 && stack[stack.length - 1].type === "dash") {
             stack.pop();
             out.push("</div>");
         }
     };
 
     const closeH3 = () => {
-        closeAllStars();
+        closeDash();
         if (stack.length > 0 && stack[stack.length - 1].type === "h3") {
-            stack.pop();
+            let popped = stack.pop();
             out.push("</div>");
+            if (popped.hasIssueWrapper) out.push("</div>");
         }
     };
 
     const closeH2 = () => {
         closeH3();
         if (stack.length > 0 && stack[stack.length - 1].type === "h2") {
+            let popped = stack.pop();
+            out.push("</div>");
+            if (popped.hasIssueWrapper) out.push("</div>");
+        }
+    };
+
+    const closeH1 = () => {
+        closeH2();
+        if (stack.length > 0 && stack[stack.length - 1].type === "h1") {
             stack.pop();
             out.push("</div>");
         }
@@ -947,10 +991,21 @@ function formatText(str) {
     lines.forEach((line, index) => {
         let trimmed = line.trim();
 
-        // 1. ### 대제목: 모든 열린 트리 닫고 최상위에 출력 + (-) 카운터 리셋
+        // 💜 논점선언(^) 접두사 감지: 분류 명령어(###, ##, #, -, *~*******) 앞에 붙은 ^만 인식
+        let isIssue = false;
+        if (/^\^(###|##|#|-|\*{1,7}(p|exc|r|eg|neg)?(?=\s|$))/.test(trimmed)) {
+            isIssue = true;
+            trimmed = trimmed.slice(1);
+        }
+
+        // 1. ### 대제목: 이전 ###까지 모든 열린 트리 닫고 최상위에 출력 + (-) 카운터 리셋
         if (trimmed.startsWith("###")) {
-            closeH2();
+            closeH1();
             dashCount = 0;
+            if (isIssue) {
+                out.push(`<div class="issue-box">`);
+                stack.push({ type: "h1" });
+            }
             let content = restoreQuotes(trimmed.replace(/^###\s?/, ""));
             out.push(`<div class="custom-h1"># ${content}</div>`);
             return;
@@ -964,22 +1019,24 @@ function formatText(str) {
             if (index > 0 && prevTrimmed !== "") {
                 out.push(`<div class="tree-empty-line"></div>`);
             }
+            if (isIssue) out.push(`<div class="issue-box">`);
             let content = restoreQuotes(trimmed.replace(/^##\s?/, ""));
             out.push(`<div class="custom-h2">${h2Count}. ${content}</div>`);
             out.push(`<div class="tree-branch branch-h2">`);
-            stack.push({ type: "h2" });
+            stack.push({ type: "h2", hasIssueWrapper: isIssue });
             return;
         }
 
-        // 3. # 소제목: 이전 #와 하위 *만 닫고(상위 ## 컨테이너는 유지), 새 # 타이틀 출력 후 .branch-h3 오픈!
+        // 3. # 소제목: 이전 #와 하위 항목 닫고(상위 ## 유지), 새 # 타이틀 출력 후 .branch-h3 오픈!
         if (trimmed.startsWith("#")) {
             closeH3();
             h3Count++; dashCount = 0;
             let currentH2 = h2Count === 0 ? 1 : h2Count;
+            if (isIssue) out.push(`<div class="issue-box">`);
             let content = restoreQuotes(trimmed.replace(/^#\s?/, ""));
             out.push(`<div class="custom-h3">${currentH2}.${h3Count}. ${content}</div>`);
             out.push(`<div class="tree-branch branch-h3">`);
-            stack.push({ type: "h3" });
+            stack.push({ type: "h3", hasIssueWrapper: isIssue });
             return;
         }
 
@@ -996,25 +1053,30 @@ function formatText(str) {
             while (currentStarDepth + 1 < stars) {
                 currentStarDepth++;
                 out.push(`<div class="tree-branch" style="border-left:none;">`);
-                stack.push({ type: "star", depth: currentStarDepth });
+                stack.push({ type: "star", depth: currentStarDepth, hasIssueWrapper: false });
             }
 
+            if (isIssue) out.push(`<div class="issue-box">`);
             out.push(`<div class="tree-branch branch-star branch-star-${mod}">`);
-            stack.push({ type: "star", depth: stars });
+            stack.push({ type: "star", depth: stars, hasIssueWrapper: isIssue });
             out.push(`<div class="tree-line">${content}</div>`);
             return;
         }
 
-        // 5. - 항목
+        // 5. - 항목: 이전 - (및 하위 *)를 닫고, ^-인 경우 다음 - 또는 상위 제목 전까지 박스 오픈
         if (trimmed.startsWith("-")) {
-            closeAllStars();
+            closeDash();
             dashCount++;
+            if (isIssue) {
+                out.push(`<div class="issue-box">`);
+                stack.push({ type: "dash" });
+            }
             let content = restoreQuotes(trimmed.replace(/^-\s?/, ""));
             out.push(`<div class="tree-line custom-list">(${dashCount}) ${content}</div>`);
             return;
         }
 
-        // 6. 일반 본문 줄: 열려있던 * 분류를 모두 닫고 제목(##, #) 레벨로 복귀
+        // 6. 일반 본문 줄: 열려있던 * 분류를 모두 닫고 상위 레벨(dash 또는 제목)로 복귀
         if (trimmed !== "") {
             closeAllStars();
             let content = restoreQuotes(line.replace(/^[ \t]+/, ""));
@@ -1027,7 +1089,7 @@ function formatText(str) {
         out.push(`<div class="tree-empty-line"></div>`);
     });
 
-    closeH2();
+    closeH1();
 
     return out.join("");
 }
