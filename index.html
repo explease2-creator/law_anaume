@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>法学 ユニバーサル暗記 SYSTEM v27.0</title>
+<title>法学 ユニバーサル暗記 SYSTEM v27.1</title>
 
 <style>
 /* 🌿 기본 테마 (HAN - 나무위키 그린) */
@@ -735,7 +735,7 @@ hr.quote-hr { border: 0; border-top: 1px solid #c0c0c0; margin: 6px 0; }
 </div>
 
 <div class="top-bar">
-    <div class="top-title" id="appMainTitle">🌿 法学 ユニバーサル暗記 SYSTEM v27.0</div>
+    <div class="top-title" id="appMainTitle">🌿 法学 ユニバーサル暗記 SYSTEM v27.1</div>
     <div class="user-tab">
         <button class="btn-user active" data-user="han">👤 HAN</button>
         <button class="btn-user" data-user="ume">👤 UME</button>
@@ -747,7 +747,7 @@ hr.quote-hr { border: 0; border-top: 1px solid #c0c0c0; margin: 6px 0; }
     <div class="cat-group shared-group">
         <div class="cat-group-header">👥 共通</div>
         <div class="cat-btn-row">
-            <button class="btn-category" data-category="ox" data-title="⭕❌ OX">⭕❌ OX</button>
+            <button class="btn-category active" data-category="ox" data-title="⭕❌ OX">⭕❌ OX</button>
             <button class="btn-category" data-category="definition" data-title="📖 定義">📖 定義</button>
         </div>
     </div>
@@ -757,7 +757,7 @@ hr.quote-hr { border: 0; border-top: 1px solid #c0c0c0; margin: 6px 0; }
         <div class="cat-btn-row">
             <button class="btn-category" data-category="statute" data-title="📜 条文">📜 条文</button>
             <button class="btn-category" data-category="prep" data-title="📝 予習用">📝 予習用</button>
-            <button class="btn-category active" data-category="summary" data-title="🗂️ 整理">🗂️ 整理</button>
+            <button class="btn-category" data-category="summary" data-title="🗂️ 整理">🗂️ 整理</button>
             <button class="btn-category" data-category="argument" data-title="✍️ 論証">✍️ 論証</button>
         </div>
     </div>
@@ -781,7 +781,7 @@ hr.quote-hr { border: 0; border-top: 1px solid #c0c0c0; margin: 6px 0; }
 <div class="context-banner">
     <div class="context-main">
         <span id="bannerSubject">📘 民法</span>
-        <span id="bannerCategory" class="context-cat-pill">🗂️ 整理</span>
+        <span id="bannerCategory" class="context-cat-pill">⭕❌ OX</span>
     </div>
     <span id="bannerMode" class="context-mode-label">問題登録・管理</span>
 </div>
@@ -792,8 +792,8 @@ hr.quote-hr { border: 0; border-top: 1px solid #c0c0c0; margin: 6px 0; }
     <input id="commonLecture" placeholder="1. 講義名 (例: 第1回, 処分性, 錯誤 など)">
     <input id="commonTags" placeholder="2. タグ (カンマ(,)で複数入力可)">
 
-    <!-- OX 전용 -->
-    <div id="form-ox" class="hidden">
+    <!-- OX 전용 (디폴트 표시) -->
+    <div id="form-ox">
         <textarea id="oxQText" class="large-q-input" placeholder="3. 問題文を入力してください
 (書式: ###大見出し / ##主題 / #小主題 / -項目 / *~*******下位(最大7段: p,exc,r,eg,neg) / 先頭に^で論点枠 / >引用< / !!!ハイライト!!! / ///太字///)"></textarea>
         <span class="form-label">4. ⭕❌ 正解の判定</span>
@@ -813,7 +813,7 @@ hr.quote-hr { border: 0; border-top: 1px solid #c0c0c0; margin: 6px 0; }
     </div>
 
     <!-- 조문/예습용/정리/논증 전용 -->
-    <div id="form-slot">
+    <div id="form-slot" class="hidden">
         <textarea id="slotQText" class="large-q-input" placeholder="3. 問題文
 ### 大見出し (# 表示) / ## 主題 (1., 2. + 構造線) / # 小主題 (1.1. + 構造線)
 - 項目 (見出しごとに (1) から自動採番)
@@ -826,7 +826,7 @@ hr.quote-hr { border: 0; border-top: 1px solid #c0c0c0; margin: 6px 0; }
     <hr style="border: 0; border-top: 1px solid var(--border-light); margin: 18px 0;">
     <button id="btnToggleDB" class="action-btn" style="background: var(--bg-sub); color: var(--text-main);">📚 登録問題の一覧 表示/非表示</button>
 
-    <!-- 🔍 검색 및 접기/펼치기 + 문제 목록 래퍼 (닫혀있을 땐 렌더링 생략) -->
+    <!-- 🔍 검색 및 접기/펼치기 + 문제 목록 래퍼 (기본 전체 접힘 상태) -->
     <div id="dbListWrapper" class="hidden">
         <div class="db-toolbar">
             <input id="dbSearchInput" type="search" placeholder="🔍 講義名・タグ・本文を検索...">
@@ -943,13 +943,13 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const dbInstance = getFirestore(app);
 
-// 글로벌 상태 변수
+// 글로벌 상태 변수 (디폴트: HAN - OX - 民法 - データベース)
 let currentUser = "han";
 let currentSubject = "civil";
 let currentSubjectTitle = "📘 民法";
-let currentCategory = "summary"; 
-let currentCategoryTitle = "🗂️ 整理";
-let currentAppMode = "slot";
+let currentCategory = "ox"; 
+let currentCategoryTitle = "⭕❌ OX";
+let currentAppMode = "ox";
 let currentTab = "db";
 
 let colRef = null;
@@ -958,10 +958,10 @@ let db = [];
 let currentTest = [];
 let editingDocId = null;
 
-// DB 열람 최적화 & 검색·접기 상태
+// DB 열람 최적화 & 검색·접기 상태 (기본값: 전체 접힘 → expandedGroups에 들어간 그룹만 펼침)
 let dbNeedsRender = true;
 let dbSearchQuery = "";
-let collapsedGroups = new Set();
+let expandedGroups = new Set();
 
 let oxSelectedAns = "O";
 let editOxSelectedAns = "O";
@@ -981,7 +981,7 @@ function getItemsCollectionRef(user, subject, category) {
     return collection(dbInstance, "study_v2", getBucketKey(user, subject, category), "items");
 }
 
-/* ================= 🔄 레거시 단일 문서 경로 (이관 전용, 활성 CRUD에서는 미사용) ================= */
+/* ================= 🔄 레거시 단일 문서 경로 (이관 전용) ================= */
 function getLegacyDocRef(user, subject, category) {
     if (category === "ox") {
         if (subject === "constitution") return doc(dbInstance, "exams", "ox_db_doc");
@@ -1051,7 +1051,6 @@ async function runFullMigration() {
 
             const targetColRef = getItemsCollectionRef(job.user, job.subject, job.category);
 
-            // Firestore batch 한도(500건)를 고려해 400건 단위로 안전하게 분할 커밋
             const CHUNK_SIZE = 400;
             for (let start = 0; start < questions.length; start += CHUNK_SIZE) {
                 const batch = writeBatch(dbInstance);
@@ -1066,7 +1065,6 @@ async function runFullMigration() {
                     if (!cleanQ.createdAt) cleanQ.createdAt = 1700000000000 + idx;
                     if (!cleanQ.type) cleanQ.type = getAppMode(job.category);
 
-                    // 고정 ID를 사용해 재실행 시에도 중복 생성 방지 (Idempotent)
                     const fixedDocId = `legacy_${String(idx).padStart(5, "0")}`;
                     batch.set(doc(targetColRef, fixedDocId), cleanQ);
                     totalQuestionsMigrated++;
@@ -1079,7 +1077,7 @@ async function runFullMigration() {
         await setDoc(doc(dbInstance, "study_v2", "_migration_meta"), {
             migratedAt: Date.now(),
             totalMigrated: totalQuestionsMigrated,
-            version: "v27.0"
+            version: "v27.1"
         });
 
         statusEl.textContent = `移行完了！合計 ${totalQuestionsMigrated}問を新DBへコピーしました。`;
@@ -1135,11 +1133,11 @@ function updateUIContext() {
 
     if (currentUser === "ume") {
         document.body.classList.add("theme-ume");
-        document.getElementById("appMainTitle").textContent = "🌸 法学 ユニバーサル暗記 SYSTEM v27.0";
+        document.getElementById("appMainTitle").textContent = "🌸 法学 ユニバーサル暗記 SYSTEM v27.1";
         document.getElementById("personalHeader").textContent = "👤 UME";
     } else {
         document.body.classList.remove("theme-ume");
-        document.getElementById("appMainTitle").textContent = "🌿 法学 ユニバーサル暗記 SYSTEM v27.0";
+        document.getElementById("appMainTitle").textContent = "🌿 法学 ユニバーサル暗記 SYSTEM v27.1";
         document.getElementById("personalHeader").textContent = "👤 HAN";
     }
 
@@ -1167,9 +1165,11 @@ function connectDatabase() {
     colRef = getItemsCollectionRef(currentUser, currentSubject, currentCategory);
     currentTest = [];
     oxUserAnswers = {};
-    collapsedGroups.clear();
+    expandedGroups.clear();
     dbSearchQuery = "";
     document.getElementById("dbSearchInput").value = "";
+    document.getElementById("caseSelect").value = "all";
+    document.getElementById("tagSelect").value = "all";
     document.getElementById("examOut").innerHTML = "";
     document.getElementById("examCtrlArea").classList.add("hidden");
 
@@ -1181,7 +1181,6 @@ function connectDatabase() {
         items.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
         db = items;
 
-        // 숨겨진 상태에서는 불필요한 전체 재렌더링 생략 (열 때 렌더링)
         dbNeedsRender = true;
         if (isDBListVisible()) {
             renderDB();
@@ -1198,7 +1197,7 @@ function refreshDropdowns() {
     renderTagSelect();
 }
 
-/* ================= 🌳 중첩 트리 스택(Nested Tree Stack) 서식 파서 (v27.0) ================= */
+/* ================= 🌳 중첩 트리 스택(Nested Tree Stack) 서식 파서 (v27.1) ================= */
 function formatText(str) {
     if (!str) return "";
     
@@ -1461,7 +1460,6 @@ document.getElementById("btnAddQ").addEventListener("click", async () => {
     btn.textContent = "保存中...";
     try {
         await addDoc(colRef, payload);
-        // 저장에 성공했을 때만 입력창 초기화
         if (currentAppMode === "ox") {
             document.getElementById("oxQText").value = "";
             document.getElementById("oxNote").value = "";
@@ -1521,7 +1519,6 @@ function printQ(docId) {
 
     printArea.innerHTML = `${metaHtml}${lectureHtml}${tagHtml}<hr class="print-divider">${bodyHtml}`;
 
-    // PDF 저장 시 기본 파일명이 깔끔하게 지정되도록 문서 타이틀 임시 변경
     const originalTitle = document.title;
     const cleanSub = currentSubjectTitle.replace(/[^\u3000-\u9FFF\w]/g, "");
     const cleanCat = currentCategoryTitle.replace(/[^\u3000-\u9FFF\w]/g, "");
@@ -1624,19 +1621,19 @@ document.getElementById("dbSearchInput").addEventListener("input", (e) => {
 });
 
 document.getElementById("btnExpandAll").addEventListener("click", () => {
-    collapsedGroups.clear();
-    document.querySelectorAll("#dbView .group").forEach(el => el.classList.remove("collapsed"));
-});
-
-document.getElementById("btnCollapseAll").addEventListener("click", () => {
     document.querySelectorAll("#dbView .group").forEach(el => {
         const key = decodeURIComponent(el.dataset.group || "");
-        collapsedGroups.add(key);
-        el.classList.add("collapsed");
+        expandedGroups.add(key);
+        el.classList.remove("collapsed");
     });
 });
 
-/* ================= 🎯 DB 목록 이벤트 위임 (단일 리스너로 성능 최적화) ================= */
+document.getElementById("btnCollapseAll").addEventListener("click", () => {
+    expandedGroups.clear();
+    document.querySelectorAll("#dbView .group").forEach(el => el.classList.add("collapsed"));
+});
+
+/* ================= 🎯 DB 목록 이벤트 위임 (단일 리스너) ================= */
 document.getElementById("dbView").addEventListener("click", (e) => {
     const printBtn = e.target.closest(".btn-print-q");
     if (printBtn) { printQ(printBtn.dataset.id); return; }
@@ -1653,14 +1650,14 @@ document.getElementById("dbView").addEventListener("click", (e) => {
         if (!groupEl) return;
         const key = decodeURIComponent(groupEl.dataset.group || "");
         if (groupEl.classList.toggle("collapsed")) {
-            collapsedGroups.add(key);
+            expandedGroups.delete(key);
         } else {
-            collapsedGroups.delete(key);
+            expandedGroups.add(key);
         }
     }
 });
 
-/* ================= DB 목록 렌더링 (지연 렌더링 + 검색 필터 + 접기 유지) ================= */
+/* ================= DB 목록 렌더링 (기본 전체 접힘 + 검색 시 자동 펼침) ================= */
 function renderDB() {
     dbNeedsRender = false;
     const query = dbSearchQuery;
@@ -1702,7 +1699,8 @@ function renderDB() {
 
     let html = "";
     sortedKeys.forEach(group => {
-        const isCollapsed = !query && collapsedGroups.has(group);
+        // 검색어가 없을 때는 기본 접힘(expandedGroups에 등록된 것만 펼침), 검색 중에는 결과 확인용으로 자동 펼침
+        const isCollapsed = !query && !expandedGroups.has(group);
         const items = grouped[group];
         html += `<div class="group${isCollapsed ? " collapsed" : ""}" data-group="${encodeURIComponent(group)}">`;
         html += `<div class="group-title"><span>${group}</span><span class="group-title-meta"><span>${items.length}問</span><span class="group-chevron">▼</span></span></div>`;
@@ -1866,7 +1864,6 @@ function renderExam(testData, title, shouldFocusFirst = true) {
                 if (input.classList.contains("inline-input")) {
                     input.addEventListener("keydown", e => {
                         if (e.key === "Enter") {
-                            // 일본어/한국어 IME 변환 조합 중 Enter는 포커스 이동 방지
                             if (e.isComposing || e.keyCode === 229) return;
                             e.preventDefault();
                             const n = inputs[index + 1];
